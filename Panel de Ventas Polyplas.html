@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Polyplas · Panel de Ventas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #f5f6f8;
+    --card: #ffffff;
+    --border: #e6e8ec;
+    --text: #0f172a;
+    --muted: #64748b;
+    --muted-2: #94a3b8;
+    --blue-500: #2563eb;
+    --blue-600: #1d4ed8;
+    --blue-grad-a: #4f7cf6;
+    --blue-grad-b: #2f5fe0;
+    --green-grad-a: #1fb16b;
+    --green-grad-b: #15a05f;
+    --sky: #38bdf8;
+    --orange: #f59e0b;
+    --emerald: #10b981;
+    --pill: #f1f5f9;
+    --shadow: 0 1px 2px rgba(15,23,42,0.04), 0 1px 3px rgba(15,23,42,0.04);
+    --shadow-card: 0 1px 2px rgba(15,23,42,0.04);
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; -webkit-font-smoothing: antialiased; }
+  body { min-height: 100vh; }
+
+  /* ===================== LOGIN ===================== */
+  .login-screen {
+    position: fixed; inset: 0;
+    display: flex;
+    z-index: 50;
+    transition: opacity .35s ease;
+  }
+  .login-screen.hide { opacity: 0; pointer-events: none; }
+
+  /* --- Panel izquierdo: marca --- */
+  .login-brand-panel {
+    width: 44%;
+    background: linear-gradient(155deg, #001e40 0%, #002d5c 40%, #004a99 100%);
+    display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+    padding: 64px 56px;
+    position: relative; overflow: hidden;
+    flex-shrink: 0;
+  }
+  .login-brand-panel::before {
+    content: '';
+    position: absolute; top: -140px; right: -140px;
+    width: 420px; height: 420px; border-radius: 50%;
+    background: rgba(255,255,255,0.035);
+    pointer-events: none;
+  }
+  .login-brand-panel::after {
+    content: '';
+    position: absolute; bottom: -100px; left: -60px;
+    width: 320px; height: 320px; border-radius: 50%;
+    background: rgba(229,39,39,0.07);
+    pointer-events: none;
+  }
+  .lbp-geo {
+    position: absolute; top: 56px; right: 52px;
+    width: 88px; height: 88px; border-radius: 22px;
+    border: 1.5px solid rgba(255,255,255,0.08);
+    pointer-events: none;
+  }
+  .lbp-geo2 {
+    position: absolute; top: 76px; right: 72px;
+    width: 48px; height: 48px; border-radius: 12px;
+    border: 1.5px solid rgba(229,39,39,0.25);
+    pointer-events: none;
+  }
+  .lbp-logo-mark {
+    width: 58px; height: 58px;
+    background: #e52727;
+    border-radius: 15px;
+    display: grid; place-items: center;
+    margin-bottom: 36px;
+    position: relative; z-index: 1;
+    box-shadow: 0 8px 28px -6px rgba(229,39,39,0.5);
+  }
+  .lbp-wordmark {
+    font-size: 46px; font-weight: 800;
+    color: #fff; letter-spacing: -0.04em;
+    line-height: 1; margin-bottom: 10px;
+    position: relative; z-index: 1;
+    font-family: 'Inter', sans-serif;
+  }
+  .lbp-tagline {
+    font-size: 12px; font-weight: 600;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 0.16em; text-transform: uppercase;
+    margin-bottom: 40px;
+    position: relative; z-index: 1;
+  }
+  .lbp-divider {
+    width: 36px; height: 3px;
+    background: #e52727; border-radius: 2px;
+    margin-bottom: 24px;
+    position: relative; z-index: 1;
+  }
+  .lbp-desc {
+    font-size: 14px; color: rgba(255,255,255,0.40);
+    line-height: 1.75; max-width: 250px;
+    position: relative; z-index: 1; font-weight: 400;
+  }
+  .lbp-footer {
+    position: absolute; bottom: 36px; left: 56px;
+    font-size: 11px; color: rgba(255,255,255,0.22);
+    font-weight: 500; letter-spacing: 0.06em; z-index: 1;
+  }
+
+  /* --- Panel derecho: formulario --- */
+  .login-form-panel {
+    flex: 1;
+    background: #ffffff;
+    display: flex; align-items: center; justify-content: center;
+    padding: 48px 40px;
+  }
+  .login-card {
+    width: 100%; max-width: 380px;
+  }
+  .login-card-logo {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 44px;
+  }
+  .login-card-mark {
+    width: 42px; height: 42px;
+    background: #002d5c; border-radius: 11px;
+    display: grid; place-items: center;
+    flex-shrink: 0;
+  }
+  .login-card-name {
+    font-size: 18px; font-weight: 800;
+    color: #002d5c; letter-spacing: -0.025em;
+    font-family: 'Inter', sans-serif;
+  }
+  .login-card-name span { color: #e52727; }
+  .login-card-sub {
+    font-size: 11px; font-weight: 600;
+    color: #94a3b8; letter-spacing: 0.08em;
+    text-transform: uppercase; margin-top: 1px;
+  }
+  .login-title {
+    font-size: 28px; font-weight: 800;
+    letter-spacing: -0.035em; color: #0f172a;
+    margin: 0 0 10px;
+    font-family: 'Inter', sans-serif;
+  }
+  .login-desc {
+    font-size: 14px; color: #64748b;
+    margin: 0 0 32px; line-height: 1.65; font-weight: 400;
+  }
+  .login-label {
+    font-size: 11.5px; font-weight: 700;
+    color: #002d5c; text-transform: uppercase;
+    letter-spacing: 0.09em; margin-bottom: 9px; display: block;
+  }
+  .login-input-wrap { position: relative; }
+  .login-input {
+    width: 100%; padding: 13px 48px 13px 16px;
+    border-radius: 10px; border: 1.5px solid #e2e8f0;
+    background: #f8fafc; font-size: 15px;
+    font-family: inherit; color: #0f172a;
+    transition: border-color .15s, box-shadow .15s, background .15s;
+  }
+  .login-input::placeholder { color: #cbd5e1; }
+  .login-input:focus {
+    outline: none; border-color: #004a99;
+    background: #fff; box-shadow: 0 0 0 4px rgba(0,74,153,0.10);
+  }
+  .login-eye {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    background: none; border: 0; color: #94a3b8; cursor: pointer;
+    padding: 6px; border-radius: 6px; display: grid; place-items: center;
+    transition: color .12s, background .12s;
+  }
+  .login-eye:hover { color: #004a99; background: #eff6ff; }
+  .login-error {
+    color: #dc2626; font-size: 12.5px; margin-top: 10px;
+    min-height: 20px; font-weight: 600; display: flex; align-items: center; gap: 5px;
+  }
+  .login-btn {
+    margin-top: 20px; width: 100%; padding: 14px 20px; border: 0;
+    background: #004a99; color: #fff; font-weight: 700;
+    font-size: 15px; border-radius: 10px; cursor: pointer;
+    font-family: inherit; letter-spacing: -0.01em;
+    transition: background .15s, transform .08s, box-shadow .15s;
+    box-shadow: 0 4px 18px -4px rgba(0,74,153,0.38);
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .login-btn:hover { background: #003a7a; box-shadow: 0 6px 22px -4px rgba(0,74,153,0.48); }
+  .login-btn:active { transform: translateY(1px); }
+  .login-btn svg { opacity: 0.7; }
+  .login-foot {
+    margin-top: 22px; font-size: 12px; color: #94a3b8;
+    text-align: center; font-weight: 500;
+  }
+  .login-foot kbd {
+    background: #f1f5f9; padding: 2px 7px; border-radius: 5px;
+    font-family: ui-monospace, monospace; font-size: 11px;
+    border: 1px solid #e2e8f0; color: #475569;
+  }
+  .login-separator {
+    display: flex; align-items: center; gap: 12px;
+    margin: 28px 0 0;
+  }
+  .login-separator hr {
+    flex: 1; border: none; border-top: 1px solid #f1f5f9; margin: 0;
+  }
+  .login-separator span {
+    font-size: 11px; color: #cbd5e1; font-weight: 500; white-space: nowrap;
+  }
+
+  @media (max-width: 820px) {
+    .login-brand-panel { display: none; }
+    .login-form-panel { background: #f8fafc; }
+  }
+
+  /* ===================== APP ===================== */
+  .app { max-width: 1480px; margin: 0 auto; padding: 28px 32px 60px; }
+  .app.fade-in { animation: fadeIn .4s ease both; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  /* Header */
+  .header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 22px; }
+  .h-title { font-size: 26px; font-weight: 700; letter-spacing: -0.025em; margin: 0; }
+  .h-sub { font-size: 13.5px; color: var(--muted); margin: 4px 0 0; font-weight: 500; }
+  .live-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: #ecfdf5; color: #047857; padding: 6px 12px;
+    border-radius: 999px; font-size: 12.5px; font-weight: 600;
+    border: 1px solid #d1fae5;
+  }
+  .live-dot { width: 7px; height: 7px; border-radius: 50%; background: #10b981; box-shadow: 0 0 0 0 rgba(16,185,129,0.6); animation: pulse 2s infinite; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.6); } 70% { box-shadow: 0 0 0 8px rgba(16,185,129,0); } 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); } }
+
+  /* Filter bar */
+  .filter-bar {
+    background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 16px 18px; display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 18px; box-shadow: var(--shadow-card);
+  }
+  .fb-left { display: flex; align-items: center; gap: 10px; }
+  .fb-icon { width: 16px; height: 16px; color: var(--muted); }
+  .fb-label { font-size: 14px; font-weight: 500; color: var(--text); }
+  .fb-leads-pill {
+    background: var(--pill); color: var(--text); font-size: 12.5px; font-weight: 600;
+    padding: 4px 10px; border-radius: 999px;
+  }
+  .fb-right { display: flex; align-items: center; gap: 10px; }
+  .fb-date-label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap; }
+  .fb-date-input {
+    padding: 8px 12px; border-radius: 9px; border: 1.5px solid var(--border);
+    font-size: 13.5px; font-family: inherit; color: var(--text);
+    background: var(--pill); cursor: pointer; transition: border-color .15s, box-shadow .15s;
+    font-weight: 500;
+  }
+  .fb-date-input:focus { outline: none; border-color: #004a99; box-shadow: 0 0 0 3px rgba(0,74,153,0.10); background: #fff; }
+  .fb-date-sep { font-size: 14px; color: var(--muted-2); font-weight: 600; }
+
+  /* Metric cards */
+  .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 22px; }
+  .metric {
+    border-radius: var(--radius); padding: 18px 20px; position: relative; overflow: hidden;
+    border: 1px solid var(--border); background: #fff; box-shadow: var(--shadow-card);
+    min-height: 108px;
+  }
+  .metric.blue {
+    background: linear-gradient(135deg, var(--blue-grad-a) 0%, var(--blue-grad-b) 100%);
+    color: #fff; border-color: transparent;
+  }
+  .metric.green {
+    background: linear-gradient(135deg, #1fb16b 0%, #15a05f 100%);
+    color: #fff; border-color: transparent;
+  }
+  .m-label {
+    font-size: 11.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+    margin: 0 0 8px; opacity: 0.95;
+  }
+  .metric.blue .m-label, .metric.green .m-label { opacity: 0.9; }
+  .metric:not(.blue):not(.green) .m-label { color: var(--muted); }
+  .m-value { font-size: 28px; font-weight: 700; letter-spacing: -0.025em; margin: 0; line-height: 1.1; transition: opacity .25s; }
+  .m-sub { font-size: 12.5px; margin-top: 6px; font-weight: 500; opacity: 0.92; transition: opacity .25s; }
+  .metric:not(.blue):not(.green) .m-sub { color: var(--muted); opacity: 1; }
+  .m-icon {
+    position: absolute; top: 18px; right: 18px;
+    width: 36px; height: 36px; border-radius: 10px;
+    display: grid; place-items: center;
+    background: rgba(255,255,255,0.18);
+  }
+  .metric:not(.blue):not(.green) .m-icon { background: #eff6ff; color: var(--blue-500); }
+  .metric.target .m-icon { background: #eff6ff; color: var(--blue-500); }
+
+  /* Tabs */
+  .tabs { display: inline-flex; gap: 4px; background: var(--pill); padding: 4px; border-radius: 10px; margin-bottom: 16px; }
+  .tab {
+    padding: 7px 14px; border-radius: 7px; font-size: 13.5px; font-weight: 500;
+    color: var(--muted); border: 0; background: transparent; cursor: pointer; font-family: inherit;
+    transition: all .15s;
+  }
+  .tab.active { background: #fff; color: var(--text); box-shadow: 0 1px 2px rgba(15,23,42,0.06); }
+  .tab:not(.active):hover { color: var(--text); }
+
+  /* Charts grid */
+  .charts { display: grid; grid-template-columns: 1.55fr 1fr; gap: 16px; margin-bottom: 18px; }
+  .panel {
+    background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 22px; box-shadow: var(--shadow-card);
+  }
+  .panel-title { font-size: 16.5px; font-weight: 700; letter-spacing: -0.015em; margin: 0 0 2px; }
+  .panel-sub { font-size: 13px; color: var(--muted); margin: 0 0 18px; font-weight: 500; }
+
+  /* Bar chart */
+  .chart-wrap { position: relative; }
+  .legend { display: flex; gap: 18px; justify-content: center; margin-top: 4px; font-size: 12.5px; font-weight: 500; }
+  .legend-item { display: inline-flex; align-items: center; gap: 6px; }
+  .legend-swatch { width: 12px; height: 12px; border-radius: 2px; }
+
+  /* Donut */
+  .donut-wrap { display: flex; flex-direction: column; align-items: center; gap: 18px; }
+  .donut-legend { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+  .dl-item { display: flex; align-items: center; justify-content: space-between; font-size: 13px; }
+  .dl-left { display: flex; align-items: center; gap: 8px; color: var(--text); font-weight: 500; }
+  .dl-dot { width: 9px; height: 9px; border-radius: 50%; }
+  .dl-val { font-variant-numeric: tabular-nums; color: var(--text); font-weight: 600; transition: opacity .25s; }
+
+  /* Resumen IVA */
+  .resumen { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow-card); }
+  .resumen-title { font-size: 16.5px; font-weight: 700; letter-spacing: -0.015em; margin: 0 0 16px; }
+  .resumen-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .res-card { background: var(--pill); border-radius: 10px; padding: 16px 18px; }
+  .res-label { font-size: 11.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px; }
+  .res-val { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; margin: 0; transition: opacity .25s; }
+  .res-val.orange { color: var(--orange); }
+
+  /* Animations */
+  .anim-update { animation: numFlip .35s ease; }
+  @keyframes numFlip {
+    0% { opacity: 0.4; transform: translateY(-3px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Bars */
+  .bar { transition: height .5s cubic-bezier(.2,.8,.2,1), y .5s cubic-bezier(.2,.8,.2,1); }
+  .donut-seg { transition: stroke-dasharray .6s cubic-bezier(.2,.8,.2,1); }
+
+  /* Live pill states */
+  .live-pill.loading .live-dot { background: #f59e0b; animation: none; box-shadow: none; }
+  .live-pill.error .live-dot { background: #dc2626; animation: none; box-shadow: none; }
+
+  @media (max-width: 1100px) {
+    .metrics { grid-template-columns: repeat(2, 1fr); }
+    .charts { grid-template-columns: 1fr; }
+    .resumen-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================== LOGIN ============================== -->
+<div class="login-screen" id="loginScreen">
+
+  <!-- Panel izquierdo — identidad de marca -->
+  <div class="login-brand-panel">
+    <div class="lbp-geo"></div>
+    <div class="lbp-geo2"></div>
+
+    <div class="lbp-logo-mark">
+      <!-- Ícono P geométrico -->
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+        <rect x="5" y="4" width="6" height="18" rx="1.5" fill="#fff"/>
+        <rect x="5" y="4" width="12" height="6" rx="1.5" fill="#fff"/>
+        <rect x="5" y="10" width="12" height="6" rx="1.5" fill="rgba(255,255,255,0.55)"/>
+        <circle cx="17" cy="7" r="3" fill="rgba(255,255,255,0.85)"/>
+        <circle cx="17" cy="13" r="3" fill="rgba(255,255,255,0.55)"/>
+      </svg>
+    </div>
+
+    <div class="lbp-wordmark">Polyplas</div>
+    <div class="lbp-tagline">Panel de Ventas</div>
+    <div class="lbp-divider"></div>
+    <div class="lbp-desc">Métricas comerciales y conversión de leads en tiempo real para el equipo de ventas.</div>
+
+    <div class="lbp-footer">© 2026 Polyplas · Uso interno</div>
+  </div>
+
+  <!-- Panel derecho — formulario -->
+  <div class="login-form-panel">
+    <div class="login-card">
+
+      <div class="login-card-logo">
+        <div class="login-card-mark">
+          <svg width="22" height="22" viewBox="0 0 26 26" fill="none">
+            <rect x="5" y="4" width="6" height="18" rx="1.5" fill="#fff"/>
+            <rect x="5" y="4" width="12" height="6" rx="1.5" fill="#fff"/>
+            <rect x="5" y="10" width="12" height="6" rx="1.5" fill="rgba(255,255,255,0.6)"/>
+            <circle cx="17" cy="7" r="3" fill="rgba(255,255,255,0.9)"/>
+            <circle cx="17" cy="13" r="3" fill="rgba(255,255,255,0.55)"/>
+          </svg>
+        </div>
+        <div>
+          <div class="login-card-name">Poly<span>plas</span></div>
+          <div class="login-card-sub">Panel interno</div>
+        </div>
+      </div>
+
+      <h1 class="login-title">Bienvenido</h1>
+      <p class="login-desc">Ingresá tu clave de acceso para ver el panel de ventas y métricas.</p>
+
+      <form id="loginForm" autocomplete="off">
+        <label class="login-label" for="pwd">Clave de acceso</label>
+        <div class="login-input-wrap">
+          <input class="login-input" type="password" id="pwd" placeholder="••••••••••••" autofocus />
+          <button type="button" class="login-eye" id="eyeBtn" aria-label="Mostrar/ocultar contraseña">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <div class="login-error" id="loginError"></div>
+
+        <button type="submit" class="login-btn">
+          Ingresar al panel
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+
+        <div class="login-separator">
+          <hr/><span>acceso seguro</span><hr/>
+        </div>
+
+        <div class="login-foot">Presioná <kbd>Enter</kbd> para acceder</div>
+      </form>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- ============================== APP ============================== -->
+<div class="app" id="app" style="display:none;">
+  <div class="header">
+    <div>
+      <h1 class="h-title">Polyplas · Panel de Ventas</h1>
+      <p class="h-sub">Performance digital y conversión de leads</p>
+    </div>
+    <div class="live-pill" id="livePill"><span class="live-dot" id="liveDot"></span><span id="liveLabel">En vivo</span></div>
+  </div>
+
+  <!-- Filter bar -->
+  <div class="filter-bar">
+    <div class="fb-left">
+      <svg class="fb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      <span class="fb-label">Período</span>
+      <span class="fb-leads-pill" id="leadsPill">— leads</span>
+    </div>
+    <div class="fb-right">
+      <label class="fb-date-label">Desde</label>
+      <input type="date" class="fb-date-input" id="dateFrom" />
+      <span class="fb-date-sep">→</span>
+      <label class="fb-date-label">Hasta</label>
+      <input type="date" class="fb-date-input" id="dateTo" />
+    </div>
+  </div>
+
+  <!-- Metrics -->
+  <div class="metrics">
+    <div class="metric blue">
+      <p class="m-label">Venta con IVA</p>
+      <p class="m-value" id="mVentaIva">$5.069.820</p>
+      <p class="m-sub" id="mVentas">15 ventas cerradas</p>
+      <div class="m-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      </div>
+    </div>
+    <div class="metric green">
+      <p class="m-label">Venta sin IVA (neto)</p>
+      <p class="m-value" id="mNeto">$4.260.353</p>
+      <p class="m-sub" id="mIvaSub">IVA: $809.467</p>
+      <div class="m-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/></svg>
+      </div>
+    </div>
+    <div class="metric">
+      <p class="m-label">Ticket promedio</p>
+      <p class="m-value" id="mTicket">$337.988</p>
+      <p class="m-sub">por venta cerrada</p>
+      <div class="m-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>
+      </div>
+    </div>
+    <div class="metric target">
+      <p class="m-label">Tasa de conversión</p>
+      <p class="m-value" id="mTasa">83.3%</p>
+      <p class="m-sub" id="mLeads">15 de 18 leads</p>
+      <div class="m-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active">Ventas</button>
+    <button class="tab">Performance Digital</button>
+    <button class="tab">Detalle de Leads</button>
+  </div>
+
+  <!-- Charts -->
+  <div class="charts">
+    <div class="panel">
+      <h2 class="panel-title">Ventas por día</h2>
+      <p class="panel-sub">Comparativa con IVA vs neto</p>
+      <div class="chart-wrap">
+        <svg id="barChart" viewBox="0 0 760 320" width="100%" height="320" preserveAspectRatio="none"></svg>
+      </div>
+      <div class="legend">
+        <span class="legend-item"><span class="legend-swatch" style="background:#2563eb;"></span><span style="color:#2563eb;font-weight:600;">Con IVA</span></span>
+        <span class="legend-item"><span class="legend-swatch" style="background:#38bdf8;"></span><span style="color:#38bdf8;font-weight:600;">Sin IVA</span></span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2 class="panel-title">Por categoría</h2>
+      <p class="panel-sub">Distribución del revenue</p>
+      <div class="donut-wrap">
+        <svg id="donut" viewBox="0 0 200 200" width="220" height="220"></svg>
+        <div class="donut-legend" id="donutLegend"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resumen IVA -->
+  <div class="resumen">
+    <h2 class="resumen-title">Resumen IVA</h2>
+    <div class="resumen-grid">
+      <div class="res-card">
+        <p class="res-label">Bruto (con IVA)</p>
+        <p class="res-val" id="rBruto">$5.069.820</p>
+      </div>
+      <div class="res-card">
+        <p class="res-label">Neto (sin IVA)</p>
+        <p class="res-val" id="rNeto">$4.260.353</p>
+      </div>
+      <div class="res-card">
+        <p class="res-label">IVA débito (19%)</p>
+        <p class="res-val orange" id="rIva">$809.467</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================================================================
+   CONFIG
+================================================================ */
+const PWD        = "polyplas2026";
+const SHEET_URL  = "https://docs.google.com/spreadsheets/d/1LIv5twYMQiYSfbyq5x98Pw-ZKp1sUeywVBLtvLgBjcA/export?format=csv&gid=1432184663";
+const REFRESH_MS = 60000; // auto-refresh cada 60 segundos
+
+/* ================================================================
+   ESTADO GLOBAL
+================================================================ */
+let allLeads     = [];
+let currentRange = "custom";
+let customFrom   = null;
+let customTo     = null;
+let refreshTimer = null;
+
+/* ================================================================
+   PARSER CSV ROBUSTO
+================================================================ */
+function parseCSVRow(line) {
+  const result = [];
+  let cur = "", inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (c === '"')            { inQ = !inQ; }
+    else if (c === "," && !inQ) { result.push(cur); cur = ""; }
+    else                        { cur += c; }
+  }
+  result.push(cur);
+  return result;
+}
+
+function parseCSV(text) {
+  const lines = text.trim().split("\n");
+  const headers = parseCSVRow(lines[0]).map(h => h.trim());
+  return lines.slice(1).filter(l => l.trim()).map(l => {
+    const cols = parseCSVRow(l);
+    const obj = {};
+    headers.forEach((h, i) => { obj[h] = (cols[i] || "").trim(); });
+    return obj;
+  });
+}
+
+/* ================================================================
+   PARSEO DE DATOS
+================================================================ */
+// "15/04/2026 12:13:04"  →  Date | null
+function parseSheetDate(str) {
+  if (!str || str.trim() === "-" || str.trim() === "") return null;
+  const datePart = str.trim().split(" ")[0];
+  const parts = datePart.split("/").map(Number);
+  if (parts.length !== 3 || parts.some(isNaN)) return null;
+  const [d, m, y] = parts;
+  return new Date(y, m - 1, d);
+}
+
+// "1.068.620"  →  1068620
+function parseMonto(str) {
+  if (!str || str === "-") return 0;
+  return parseInt(str.replace(/\./g, "").replace(/,/g, ""), 10) || 0;
+}
+
+// Detecta categoría según URL del producto
+function detectCategoria(url) {
+  if (!url) return "Directo / Home";
+  if (url.includes("plancha-acrilico-1830x1220")) return "Plancha acrílico 1830x1220";
+  if (url.includes("planchas-acrilico"))           return "Planchas acrílico";
+  if (url.includes("policarbonato-compacto"))      return "Policarbonato compacto";
+  return "Directo / Home";
+}
+
+const CAT_COLORS = {
+  "Planchas acrílico":           "#2563eb",
+  "Plancha acrílico 1830x1220":  "#38bdf8",
+  "Policarbonato compacto":      "#10b981",
+  "Directo / Home":              "#f59e0b",
+};
+
+function processRows(raw) {
+  return raw.map(r => {
+    const fechaLead = parseSheetDate(r["Fecha lead"]);
+    if (!fechaLead) return null;
+    return {
+      id:          r["PP-XXXX"] || "-",
+      url:         r["Producto/URL"] || "",
+      fechaLead,
+      nombre:      r["Nombre"] || "-",
+      email:       r["Email"]  || "-",
+      telefono:    r["Teléfono"] || "-",
+      vendido:     (r["¿Vendido?"] || "").toLowerCase().trim() === "si",
+      monto:       parseMonto(r["Monto"]),
+      fechaCierre: parseSheetDate(r["Fecha cierre"]),
+      canal:       r["Canal cierre"] || r["Canal cotiz."] || "-",
+      categoria:   detectCategoria(r["Producto/URL"]),
+    };
+  }).filter(Boolean);
+}
+
+/* ================================================================
+   FILTRO POR RANGO DE FECHA
+================================================================ */
+function getFromTo(range) {
+  const to = new Date(); to.setHours(23, 59, 59, 999);
+  if (range === "all") return { from: new Date(0), to };
+  if (range === "custom") {
+    return {
+      from: customFrom ? new Date(customFrom + "T00:00:00") : new Date(0),
+      to:   customTo   ? new Date(customTo   + "T23:59:59") : to,
+    };
+  }
+  const from = new Date(to);
+  from.setDate(to.getDate() - parseInt(range, 10));
+  from.setHours(0, 0, 0, 0);
+  return { from, to };
+}
+
+function filteredLeads() {
+  const { from, to } = getFromTo(currentRange);
+  return allLeads.filter(l => l.fechaLead >= from && l.fechaLead <= to);
+}
+
+/* ================================================================
+   CÁLCULO DE MÉTRICAS
+================================================================ */
+function computeMetrics(leads) {
+  const ventas = leads.filter(l => l.vendido);
+  const bruto  = ventas.reduce((s, l) => s + l.monto, 0);
+  const neto   = Math.round(bruto / 1.19);
+  return {
+    leads:    leads.length,
+    cerradas: ventas.length,
+    bruto,
+    neto,
+    iva:    bruto - neto,
+    ticket: ventas.length > 0 ? Math.round(bruto / ventas.length) : 0,
+    tasa:   leads.length > 0 ? (ventas.length / leads.length * 100) : 0,
+  };
+}
+
+function computeBarsData(leads) {
+  const map = {};
+  leads.filter(l => l.vendido && l.fechaCierre).forEach(l => {
+    const d   = l.fechaCierre;
+    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+    const lbl = `${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}`;
+    if (!map[key]) map[key] = { key, label: lbl, conIva: 0, sinIva: 0 };
+    map[key].conIva += l.monto;
+    map[key].sinIva += Math.round(l.monto / 1.19);
+  });
+  return Object.values(map).sort((a, b) => a.key.localeCompare(b.key));
+}
+
+function computeDonutData(leads) {
+  const map = {};
+  leads.filter(l => l.vendido).forEach(l => {
+    if (!map[l.categoria]) map[l.categoria] = 0;
+    map[l.categoria] += l.monto;
+  });
+  return Object.entries(map)
+    .map(([name, val]) => ({ name, val, color: CAT_COLORS[name] || "#6b7280" }))
+    .sort((a, b) => b.val - a.val);
+}
+
+/* ================================================================
+   FORMATTERS
+================================================================ */
+function fmt(n) {
+  return "$" + Math.round(n).toLocaleString("es-CL").replace(/,/g, ".");
+}
+function flipText(el, newText) {
+  if (!el || el.textContent === newText) return;
+  el.classList.remove("anim-update");
+  void el.offsetWidth;
+  el.textContent = newText;
+  el.classList.add("anim-update");
+}
+
+/* ================================================================
+   BAR CHART
+================================================================ */
+function renderBars(barsArr) {
+  const svg = document.getElementById("barChart");
+  if (!barsArr.length) {
+    svg.innerHTML = `<text x="380" y="160" text-anchor="middle" fill="#94a3b8" font-size="14" font-family="Inter,sans-serif">Sin ventas cerradas en este período</text>`;
+    return;
+  }
+  const W = 760, H = 320;
+  const padL = 58, padR = 18, padT = 20, padB = 50;
+  const innerW = W - padL - padR, innerH = H - padT - padB;
+  const maxVal  = Math.max(...barsArr.flatMap(b => [b.conIva, b.sinIva]), 1);
+  const unit    = maxVal > 1000000 ? 500000 : maxVal > 200000 ? 100000 : 50000;
+  const niceMax = Math.ceil(maxVal / unit) * unit;
+
+  let gridLines = "", yLabels = "";
+  for (let i = 0; i <= 4; i++) {
+    const y   = padT + (innerH * i / 4);
+    const val = niceMax * (1 - i / 4);
+    const lab = val === 0 ? "0"
+      : val >= 1000000 ? (val/1000000).toFixed(val%1000000===0?0:1)+"M"
+      : (val/1000).toFixed(0)+"k";
+    gridLines += `<line x1="${padL}" y1="${y}" x2="${W-padR}" y2="${y}" stroke="#e2e8f0" stroke-dasharray="3 3" stroke-width="1"/>`;
+    yLabels   += `<text x="${padL-8}" y="${y+4}" text-anchor="end" fill="#94a3b8" font-size="11" font-weight="500" font-family="Inter,sans-serif">${lab}</text>`;
+  }
+
+  const groupW = innerW / barsArr.length;
+  const barW   = Math.min(24, groupW * 0.32);
+  const gap    = 4;
+  let bars = "", xLabels = "";
+
+  barsArr.forEach((b, i) => {
+    const cx = padL + groupW * i + groupW / 2;
+    const h1 = Math.max((b.conIva / niceMax) * innerH, b.conIva > 0 ? 2 : 0);
+    const h2 = Math.max((b.sinIva / niceMax) * innerH, b.sinIva > 0 ? 2 : 0);
+    bars    += `<rect class="bar" x="${cx - barW - gap/2}" y="${padT+innerH-h1}" width="${barW}" height="${h1}" fill="#2563eb" rx="2"/>`;
+    bars    += `<rect class="bar" x="${cx + gap/2}"        y="${padT+innerH-h2}" width="${barW}" height="${h2}" fill="#38bdf8" rx="2"/>`;
+    xLabels += `<text x="${cx}" y="${H-padB+22}" text-anchor="middle" fill="#94a3b8" font-size="11" font-weight="500" font-family="Inter,sans-serif">${b.label}</text>`;
+  });
+
+  svg.innerHTML = `${gridLines}${yLabels}<line x1="${padL}" y1="${padT+innerH}" x2="${W-padR}" y2="${padT+innerH}" stroke="#cbd5e1" stroke-width="1"/>${bars}${xLabels}`;
+}
+
+/* ================================================================
+   DONUT
+================================================================ */
+function renderDonut(catsArr) {
+  const svg    = document.getElementById("donut");
+  const legend = document.getElementById("donutLegend");
+  if (!catsArr.length) {
+    svg.innerHTML    = `<text x="100" y="104" text-anchor="middle" fill="#94a3b8" font-size="12" font-family="Inter,sans-serif">Sin datos</text>`;
+    legend.innerHTML = "";
+    return;
+  }
+  const cx = 100, cy = 100, r = 70, sw = 24;
+  const total = catsArr.reduce((s, c) => s + c.val, 0);
+  const C = 2 * Math.PI * r;
+  let offset = 0, segs = "";
+  catsArr.forEach(c => {
+    const len  = (c.val / total) * C;
+    const dash = Math.max(0, len - 2);
+    segs  += `<circle class="donut-seg" cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${c.color}" stroke-width="${sw}" stroke-dasharray="${dash} ${C-dash}" stroke-dashoffset="${-offset}" transform="rotate(-90 ${cx} ${cy})"/>`;
+    offset += len;
+  });
+  svg.innerHTML    = segs;
+  legend.innerHTML = catsArr.map(c => `
+    <div class="dl-item">
+      <span class="dl-left"><span class="dl-dot" style="background:${c.color}"></span>${c.name}</span>
+      <span class="dl-val">${fmt(c.val)}</span>
+    </div>`).join("");
+}
+
+/* ================================================================
+   RENDER ALL
+================================================================ */
+function renderAll() {
+  const leads = filteredLeads();
+  const m     = computeMetrics(leads);
+  flipText(document.getElementById("mVentaIva"), fmt(m.bruto));
+  flipText(document.getElementById("mVentas"),   `${m.cerradas} ventas cerradas`);
+  flipText(document.getElementById("mNeto"),     fmt(m.neto));
+  flipText(document.getElementById("mIvaSub"),   `IVA: ${fmt(m.iva)}`);
+  flipText(document.getElementById("mTicket"),   fmt(m.ticket));
+  flipText(document.getElementById("mTasa"),     m.tasa.toFixed(1) + "%");
+  flipText(document.getElementById("mLeads"),    `${m.cerradas} de ${m.leads} leads`);
+  flipText(document.getElementById("leadsPill"), `${m.leads} leads`);
+  flipText(document.getElementById("rBruto"),    fmt(m.bruto));
+  flipText(document.getElementById("rNeto"),     fmt(m.neto));
+  flipText(document.getElementById("rIva"),      fmt(m.iva));
+  renderBars(computeBarsData(leads));
+  renderDonut(computeDonutData(leads));
+}
+
+/* ================================================================
+   INDICADOR LIVE PILL
+================================================================ */
+function setLiveStatus(state) {
+  const pill = document.getElementById("livePill");
+  const dot  = document.getElementById("liveDot");
+  const lbl  = document.getElementById("liveLabel");
+  if (!pill) return;
+  pill.classList.remove("loading", "error");
+  if (state === "loading") {
+    pill.classList.add("loading");
+    lbl.textContent = "Actualizando…";
+  } else if (state === "error") {
+    pill.classList.add("error");
+    lbl.textContent = "Sin conexión";
+  } else {
+    const t = new Date().toLocaleTimeString("es-CL", { hour: "2-digit", minute: "2-digit" });
+    lbl.textContent = `En vivo · ${t}`;
+  }
+}
+
+/* ================================================================
+   FETCH GOOGLE SHEET
+================================================================ */
+async function loadSheet() {
+  setLiveStatus("loading");
+  try {
+    const res  = await fetch(SHEET_URL + "&t=" + Date.now());
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const text = await res.text();
+    allLeads   = processRows(parseCSV(text));
+    renderAll();
+    setLiveStatus("ok");
+  } catch (err) {
+    console.error("[Polyplas] Error cargando hoja:", err);
+    setLiveStatus("error");
+    if (allLeads.length) renderAll(); // mostrar datos anteriores si existen
+  }
+}
+
+function startAutoRefresh() {
+  clearInterval(refreshTimer);
+  refreshTimer = setInterval(loadSheet, REFRESH_MS);
+}
+
+/* ================================================================
+   LOGIN
+================================================================ */
+const loginForm   = document.getElementById("loginForm");
+const pwdInput    = document.getElementById("pwd");
+const loginErr    = document.getElementById("loginError");
+const loginScreen = document.getElementById("loginScreen");
+const appEl       = document.getElementById("app");
+const eyeBtn      = document.getElementById("eyeBtn");
+
+eyeBtn.addEventListener("click", () => {
+  pwdInput.type = pwdInput.type === "password" ? "text" : "password";
+});
+
+loginForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  if (pwdInput.value.trim() === PWD) {
+    loginErr.textContent = "";
+    loginScreen.classList.add("hide");
+    setTimeout(() => {
+      loginScreen.style.display = "none";
+      appEl.style.display = "";
+      appEl.classList.add("fade-in");
+      loadSheet();
+      startAutoRefresh();
+    }, 320);
+  } else {
+    loginErr.textContent = "Clave incorrecta. Intentá nuevamente.";
+    pwdInput.style.borderColor = "#dc2626";
+    pwdInput.focus(); pwdInput.select();
+    setTimeout(() => pwdInput.style.borderColor = "", 1200);
+  }
+});
+
+/* ================================================================
+   RANGO DE FECHAS (selector directo)
+================================================================ */
+const dateFrom = document.getElementById("dateFrom");
+const dateTo   = document.getElementById("dateTo");
+if (dateFrom && dateTo) {
+  const hoy    = new Date();
+  const hoyStr = hoy.toISOString().split("T")[0];
+  const hace30 = new Date(hoy); hace30.setDate(hoy.getDate() - 30);
+  const hace30Str = hace30.toISOString().split("T")[0];
+
+  dateFrom.value = hace30Str;
+  dateTo.value   = hoyStr;
+  dateFrom.max   = hoyStr;
+  dateTo.max     = hoyStr;
+  customFrom     = hace30Str;
+  customTo       = hoyStr;
+
+  [dateFrom, dateTo].forEach(inp => {
+    inp.addEventListener("change", () => {
+      customFrom = dateFrom.value;
+      customTo   = dateTo.value;
+      if (allLeads.length) renderAll();
+    });
+  });
+}
+
+/* ================================================================
+   TABS (visual)
+================================================================ */
+document.querySelectorAll(".tab").forEach(t => {
+  t.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(b => b.classList.remove("active"));
+    t.classList.add("active");
+  });
+});
+</script>
+</body>
+</html>
